@@ -78,9 +78,11 @@ public Flux<ChatCompletionResponse> chatAdvanced(String prompt) {
 		log.info("cacheCode {}", cacheCode);
 
 		ChatCompletionRequest request = ChatCompletionRequest.builder().model(deepSeekProperties.getModel())
+				.addSystemMessage("你是一个专业的助手")
+				.addAssistantMessage(elt.apply(cache.getOrDefault(cacheCode, "")))
 				.addUserMessage(prompt)
-        .addAssistantMessage(elt.apply(cache.getOrDefault(cacheCode, "")))
-				.addSystemMessage("你是一个专业的助手").maxCompletionTokens(5000).build();
+				.maxCompletionTokens(5000)
+				.build();
 		log.info("request {}", Json.toJson(request));
 		// 只保留上一次回答内容
 		cache.remove(cacheCode);
